@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Study Assistant</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+
+        <div class="logo">
+            AI Study Assistant
+        </div>
+
+        <p>
+            Learn smarter. Study better. Grow faster.
+        </p>
+
+    </header>
+
+
+    <!-- Dashboard -->
+
+    <section class="dashboard">
+
+        <div class="stat-card">
+
+            <span>📚</span>
+
+            <h3>Notes</h3>
+
+            <strong>{{ notes|length }}</strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>🤖</span>
+
+            <h3>AI Assistant</h3>
+
+            <strong>Ready</strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>📝</span>
+
+            <h3>Quiz</h3>
+
+            <strong>4</strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- Ask AI -->
+
+    <section class="card">
+
+        <h2>🤖 Ask Study Assistant</h2>
+
+        <form action="/ask" method="POST">
+
+            <input
+                type="text"
+                name="question"
+                placeholder="Ask something about Python, AI, ML..."
+                required
+            >
+
+            <button type="submit">
+                Ask AI
+            </button>
+
+        </form>
+
+
+        {% if answer %}
+
+        <div class="answer">
+
+            <h3>AI Answer</h3>
+
+            <p>{{ answer }}</p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- Notes -->
+
+    <section class="card">
+
+        <h2>📚 Add Study Note</h2>
+
+        <form action="/add-note" method="POST">
+
+            <input
+                type="text"
+                name="subject"
+                placeholder="Subject"
+                required
+            >
+
+            <input
+                type="text"
+                name="title"
+                placeholder="Note title"
+                required
+            >
+
+            <textarea
+                name="content"
+                placeholder="Write your study notes..."
+                required
+            ></textarea>
+
+            <button type="submit">
+                Save Note
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- Notes List -->
+
+    <section class="card">
+
+        <h2>📖 My Notes</h2>
+
+        {% if notes %}
+
+            {% for note in notes %}
+
+            <div class="note">
+
+                <div>
+
+                    <span class="subject">
+                        {{ note["subject"] }}
+                    </span>
+
+                    <h3>
+                        {{ note["title"] }}
+                    </h3>
+
+                    <p>
+                        {{ note["content"] }}
+                    </p>
+
+                </div>
+
+                <a
+                    href="/delete-note/{{ note['id'] }}"
+                    class="delete"
+                    onclick="return confirm('Delete this note?')"
+                >
+                    Delete
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="empty">
+                No notes available. Add your first study note.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- Summary -->
+
+    <section class="card">
+
+        <h2>📝 Text Summarizer</h2>
+
+        <form action="/summary" method="POST">
+
+            <textarea
+                name="text"
+                placeholder="Paste your study material here..."
+                required
+            ></textarea>
+
+            <button type="submit">
+                Generate Summary
+            </button>
+
+        </form>
+
+
+        {% if summary %}
+
+        <div class="answer">
+
+            <h3>Summary</h3>
+
+            <p>{{ summary }}</p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- Quiz -->
+
+    <section class="card">
+
+        <div class="quiz-header">
+
+            <h2>🎯 Practice Quiz</h2>
+
+            <a href="/quiz">
+                Start Quiz
+            </a>
+
+        </div>
+
+
+        {% if quiz %}
+
+            {% for item in quiz %}
+
+            <div class="quiz">
+
+                <h3>
+                    {{ loop.index }}. {{ item.question }}
+                </h3>
+
+                <button
+                    onclick="showAnswer('{{ item.answer }}')"
+                >
+                    Show Answer
+                </button>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                Click "Start Quiz" to generate questions.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}">
+</script>
+
+</body>
+
+</html>
